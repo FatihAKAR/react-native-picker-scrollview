@@ -10,6 +10,7 @@ import ReactNative, {
     ViewPropTypes,
     Animated
 } from 'react-native';
+import _ from 'lodash'
 import PropTypes from 'prop-types';
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
@@ -34,6 +35,7 @@ export default class ScrollPicker extends Component {
             scrollValue: new Animated.Value(0)
         };
     }
+    
     componentDidMount(){
         if(this.props.selectedIndex){
             setTimeout(() => {
@@ -41,6 +43,14 @@ export default class ScrollPicker extends Component {
             }, 0);
         }
     }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if(!_.isEqual(nextProps.dataSource,this.props.dataSource) || !_.isEqual(nextProps.selectedIndex,this.props.selectedIndex))
+            return true    
+        return false
+    }
+
+
     componentWillUnmount(){
         this.timer && clearTimeout(this.timer);
     }
@@ -82,6 +92,7 @@ export default class ScrollPicker extends Component {
                     ref={(sview) => { this.sview = sview; }}
                     bounces={false}
                     nestedScrollEnabled={true}
+                    useNativeDriver={true}
                     showsVerticalScrollIndicator={false}
                     onMomentumScrollBegin={this._onMomentumScrollBegin.bind(this)}
                     onMomentumScrollEnd={this._onMomentumScrollEnd.bind(this)}
@@ -105,41 +116,26 @@ export default class ScrollPicker extends Component {
         let isSelected = index === this.state.selectedIndex;
         const distanceFromViewCenter = Math.abs(index * this.itemHeight);
         const inputRange = [
-            // distanceFromViewCenter - 5 * this.itemHeight,
-            // distanceFromViewCenter - 4 * this.itemHeight,
-            distanceFromViewCenter - 3 * this.itemHeight,
-          distanceFromViewCenter - 2 * this.itemHeight,
+            
           distanceFromViewCenter - this.itemHeight,
           distanceFromViewCenter, // Middle of picker            
           distanceFromViewCenter + this.itemHeight,
-          distanceFromViewCenter + 2 * this.itemHeight ,
-          distanceFromViewCenter + 3 * this.itemHeight,
-        //   distanceFromViewCenter + 4 * this.itemHeight,
-        //   distanceFromViewCenter + 5 * this.itemHeight
         ];
-        // const fontSize = this.state.scrollValue.interpolate({
-        //     inputRange: inputRange,
-        //     outputRange: [  14 ,16, 18, 22, 18, 16, 14  ],
-        //     extrapolate: 'clamp',
-        // })
+       
         const rotateX = this.state.scrollValue.interpolate({
             inputRange: inputRange,
-            outputRange: [ '50deg', '25deg', '15deg', '0deg', '15deg', '25deg', '50deg', ],
+            outputRange: ['25deg', '0deg', '25deg'],
             extrapolate: 'clamp',
         })
-        // const color = this.state.scrollValue.interpolate({
-        //     inputRange: inputRange,
-        //     outputRange: [ '#757575', '#757575', '#757575', '#000', '#757575', '#757575', '#757575', ],
-        //     extrapolate: 'clamp',
-        // })
+        
         const opacity = this.state.scrollValue.interpolate({
             inputRange: inputRange,
-            outputRange: [ 0.3, 0.5, 0.7, 1, 0.7, 0.5, 0.3 ],
+            outputRange: [ 0.5, 1, 0.5 ],
             extrapolate: 'clamp',
         })
         const scale = this.state.scrollValue.interpolate({
             inputRange: inputRange,
-            outputRange: [ 0.4, 0.6, 0.8, 1, 0.8, 0.6, 0.4 ],
+            outputRange: [ 0.6, 1, 0.6],
             extrapolate: 'clamp',
         })
         const dataName = data.name
