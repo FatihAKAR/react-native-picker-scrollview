@@ -51,6 +51,13 @@ export default class ScrollPicker extends Component {
     }
 
 
+    componentDidUpdate(prevProps){
+        if(this.props.selectedIndex!==prevProps.selectedIndex)
+            setTimeout(() => {
+                this.scrollToIndex(this.props.selectedIndex);
+            }, 0);
+    }
+
     componentWillUnmount(){
         this.timer && clearTimeout(this.timer);
     }
@@ -147,7 +154,7 @@ export default class ScrollPicker extends Component {
                                             opacity: opacity,
                                             fontSize: 20, 
                                             transform: [{ rotateX: rotateX}, {scale: scale}], 
-                                            color: 'black' 
+                                            color: '#2E3D5C' 
                                         }
                                     ]
                                 }
