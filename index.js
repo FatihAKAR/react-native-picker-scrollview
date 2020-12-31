@@ -187,23 +187,27 @@ export default class ScrollPicker extends Component {
     let isSelected = index === this.state.selectedIndex
     const distanceFromViewCenter = Math.abs(index * this.itemHeight)
     const inputRange = [
-      distanceFromViewCenter - this.itemHeight,
-      distanceFromViewCenter, // Middle of picker
-      distanceFromViewCenter + this.itemHeight
+        distanceFromViewCenter - 3 * this.itemHeight,
+        distanceFromViewCenter - 2 * this.itemHeight,
+        distanceFromViewCenter - this.itemHeight,
+        distanceFromViewCenter, // Middle of picker            
+        distanceFromViewCenter + this.itemHeight,
+        distanceFromViewCenter + 2 * this.itemHeight ,
+        distanceFromViewCenter + 3 * this.itemHeight,
     ]
     const rotateX = this.state.scrollValue.interpolate({
       inputRange: inputRange,
-      outputRange: ['25deg', '0deg', '25deg'],
+      outputRange: [ '50deg', '25deg', '25deg', '0deg', '25deg', '25deg', '50deg', ],
       extrapolate: 'clamp'
     })
     const opacity = this.state.scrollValue.interpolate({
       inputRange: inputRange,
-      outputRange: [0.5, 1, 0.5],
+      outputRange: [ 0.3, 0.5, 0.7, 1, 0.7, 0.5, 0.3 ],
       extrapolate: 'clamp'
     })
     const scale = this.state.scrollValue.interpolate({
       inputRange: inputRange,
-      outputRange: [0.6, 1, 0.6],
+      outputRange: [ 0.4, 0.6, 0.8, 1, 0.8, 0.6, 0.4 ],
       extrapolate: 'clamp'
     })
     const dataName = data.name
