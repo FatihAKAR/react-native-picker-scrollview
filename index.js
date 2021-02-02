@@ -66,6 +66,9 @@ export default class ScrollPicker extends Component {
   getItemLayout = (data, index) => (
     { length: this.itemHeight, offset: this.itemHeight * index, index }
   )
+  onViewableItemsChanged = ({ viewableItems, changed }) => {
+    this.currentIndex = viewableItems[1]?.index || 0
+  }
   render() {
     const { combined, width, pickerIndex, flatlist = false } = this.props
     let { header, footer } = this._renderPlaceHolder()
@@ -101,6 +104,7 @@ export default class ScrollPicker extends Component {
           <View style={highlightStyle}></View>
           <Animated.FlatList
             // decelerationRate={0.5}
+            onViewableItemsChanged={this.onViewableItemsChanged }
             onScroll={Animated.event(
               [
                 {
@@ -271,6 +275,12 @@ export default class ScrollPicker extends Component {
           this.props.onValueChange(selectedValue, selectedIndex)
         }
       )
+    }
+  }
+  triggerOnValueChange = () => {
+    if (this.props.onValueChange && this.momentumStarted) {
+      let selectedValue = this.props.dataSource[this.currentIndex]
+      this.props.onValueChange(selectedValue, this.currentIndex)
     }
   }
   _onScrollBeginDrag() {
